@@ -74,3 +74,8 @@ Route::get('/categoriasprodutos', function(){
         }
     }
 });
+
+Route::get('/categoriasprodutos/json', function(){
+    $categorias = \App\Categoria::with('produtos')->get();
+    return $categorias->toJson();
+});
