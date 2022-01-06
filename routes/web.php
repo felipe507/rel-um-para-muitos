@@ -79,3 +79,37 @@ Route::get('/categoriasprodutos/json', function(){
     $categorias = \App\Categoria::with('produtos')->get();
     return $categorias->toJson();
 });
+//somente os dados de produtoss
+Route::get('/adicionarproduto', function(){
+    $prod = new \App\Produto();
+    $prod->nome = "Meu novo produto";
+    $prod->preco = "100.00";
+    $prod->estoque = "10";
+    $prod->categoria_id = 1;
+    $prod->save();
+    return $prod->toJson();
+});
+
+//ja vem os dados de categoria no json (associando categoria ao produto)
+Route::get('/adicionarproduto2', function() {
+    $cat = \App\Categoria::find(1);
+    $prod = new \App\Produto();
+    $prod->nome = "Meu novo produto";
+    $prod->preco = "100.00";
+    $prod->estoque = "10";
+    $prod->categoria()->associate($cat);
+    $prod->save();
+    return $prod->toJson();
+});
+
+//desassociando produto da categoria
+Route::get('/adicionarproduto3', function() {
+   $p = \App\Produto::find(3);
+   if(isset($p)){
+      $p->categoria()->associate(\App\Categoria::find(1));
+      $p->save();
+      return $p->toJson();
+   }
+});
+
+
