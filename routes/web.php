@@ -103,13 +103,28 @@ Route::get('/adicionarproduto2', function() {
 });
 
 //desassociando produto da categoria
-Route::get('/adicionarproduto3', function() {
+Route::get('/removerprodutocategoria', function() {
    $p = \App\Produto::find(3);
    if(isset($p)){
       $p->categoria()->associate(\App\Categoria::find(1));
       $p->save();
       return $p->toJson();
    }
+});
+
+//save com relacionamento
+Route::get('/adicionarproduto/{cat}', function($cat){
+    $cat = \App\Categoria::with('produtos')->find($cat);
+    $prod = new \App\Produto();
+    $prod->nome = "Meu novo produto adicionado";
+    $prod->preco = "100.00";
+    $prod->estoque = "10";
+    if(isset($cat)){
+        $cat->produtos()->save($prod);
+    }
+    //recarregando os produtos da categorias (apos de salvo um)
+    $cat->load('produtos');
+    return $prod->toJson();
 });
 
 
